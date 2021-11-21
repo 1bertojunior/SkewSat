@@ -84,10 +84,6 @@ class SkewSat():
 
         el = (180/math.pi) * math.atan(num/den)
 
-        # num = Math.cos(rx_lat*(Math.PI/180)) * Math.cos(delta*(Math.PI/180))-R0/(R0+h);
-        # den = Math.sqrt(1-Math.pow(Math.cos(rx_lat*(Math.PI/180))*Math.cos(delta*(Math.PI/180)),2));
-        # el = (180/Math.PI)*Math.atan(num/den);
-
         return el
 
 if __name__ == '__main__':
