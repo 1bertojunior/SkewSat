@@ -4,7 +4,7 @@ import math
 from satellites import satellites
 
 
-class SkewSat():
+class SkewSat:
 
     def __init__(self,rx_lat:float, rx_log:float,tx_log:float) -> None:
         self._rx_log = rx_log # LOGITUDE DA ANTENA
@@ -86,7 +86,7 @@ class SkewSat():
             delta = self._rx_log - self._tx_log
 
             num = (
-                math.cos(rx_lat*(math.pi/180)) *
+                math.cos(self._rx_lat*(math.pi/180)) *
                 math.cos(delta*(math.pi/180)) -
                 self._R0 / ( self._R0 + self._h_tx)
             )
@@ -136,7 +136,7 @@ class SkewSat():
         skew_LNBF = self.getSkewLNBF()
         skew_LNBF_h = self.skewLnbfDegreesToHours(skew_LNBF)
 
-        if azimuth and elevation and skew_LNBF:
+        if azimuth != 0 and elevation != 0 and skew_LNBF != 0:
             tp = True
             msg = f'''
                 <h2>Dados para apontamento</h2>
@@ -181,30 +181,3 @@ class SkewSat():
         # open in browser.
         new = 2
         webbrowser.open(html_page, new=new)
-
-
-if __name__ == '__main__':
-
-    rx_lat = -7.3758454
-    rx_log = -40.9715357
-    tx_log = -70
-
-    sk = SkewSat( rx_lat, rx_log, tx_log )
-    # print('Função checkValues: ', sk.checkValues())
-
-    azimuth = sk.getAzimuth() # AZIMUTE VERDADEIRO
-    elevation = sk.getElevation() # ELEVAÇÃO DE ANTENA
-    elevation_offset = elevation - 20.5
-    skew_LNBF = sk.getSkewLNBF()
-    skew_LNBF_h = sk.skewLnbfDegreesToHours(skew_LNBF)
-
-    print( f'Satélite: {sk._tx_log}°')
-    print( f'Azimute verdadeiro: {azimuth:.1f}°')
-    print( f'Elevação: {elevation:.1f}°')
-    print( f'Elevação (offset): {elevation_offset:.1f}°')
-    print( f'Inclinação do LNBF: {skew_LNBF:.1f}°')
-    print( f'Inclinação do LNBF (h): ~ {skew_LNBF_h:.0f}h')
-
-    sk.to_point()
-    sk.set_row_for_satellite()
-    sk.open_map()
