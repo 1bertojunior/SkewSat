@@ -99,18 +99,57 @@ class SkewSat():
 
         return skew
 
+    def skewLnbfDegreesToHours(self, skew:float = 0 ) -> float:
+        skew_h = (skew * 2) / 60 # CONVERTATENDO GRAUS PARA MNUTOS E depois para horas
+
+        if skew < 0: skew_h = abs(skew_h) + 6 # POSITIVO, ENTÃO É + 6 (DIREITA)
+        else: skew = abs(skew_h) - 6 # NEGATIVO, ENTÃO É + 6 (ESQUERDA)
+
+        return skew_h
 
     def to_point(self, msg='', msg_preview='Mais detalhes!', clr='red', zoom_start=15):
         azimuth = self.getAzimuth()  # AZIMUTE VERDADEIRO
         elevation = self.getElevation()  # ELEVAÇÃO DE ANTENA
         elevation_offset = elevation - 20.5
-        msg = f'''Rx latitude: {self._rx_lat}\nRx longitude: {self._rx_log}\nSatelite: {self._tx_log}
-            Elevação: {elevation:.1f}º\nElevação Offset: {elevation_offset:.1f}º\nAzimuth Verdadeiro: {azimuth:.1f}º'''
-        folium.Marker([self._rx_lat, self._rx_log],
-                      zoom_start=zoom_start,
-                      popup=f'<i>{msg}</i>',
-                      tooltip=msg_preview,
-                      icon=folium.Icon(color=clr)).add_to(self.map)
+        skew_LNBF = self.getSkewLNBF()
+        skew_LNBF_h = self.skewLnbfDegreesToHours(skew_LNBF)
+
+        msg = f'''RX latitude: {self._rx_lat}\nRX longitude: {self._rx_log}\nSatelite: {self._tx_log}
+            Elevação: {elevation:.1f}º\nElevação Offset: {elevation_offset:.1f}º\nAzimuth Verdadeiro: {azimuth:.1f}º
+            Inclinação do LNBF: {skew_LNBF:.1f}°'
+            Inclinação do LNBF (h): ~ {skew_LNBF_h:.0f}h'
+            '''
+
+        msg = f'''
+            <h2>Dados para apontamento</h2>
+            <b>RX latitude:</b> {self._rx_lat} | <b>RX longitude:</b> {self._rx_log} <br>
+            <b>Satelite:</b> {self._tx_log}  <br>
+            <b>Elevação:</b> {elevation:.1f}º | <b>Elevação Offset:</b> {elevation_offset:.1f}º <br>
+            <b>Inclinação do LNBF:</b> {skew_LNBF:.1f}° | <b>Inclinação do LNBF (h):</b> ~ {skew_LNBF_h:.0f}h
+        '''
+
+        iframe = folium.IFrame(msg)
+        popup = folium.Popup(
+            iframe,
+            min_width=400,
+            max_width=500
+        )
+
+
+        folium.Marker(
+            [self._rx_lat, self._rx_log],
+            popup = popup
+        ).add_to(self.map)
+
+        # folium.Marker(
+        #     [self._rx_lat, self._rx_log],
+        #     zoom_start = zoom_start,
+        #     popup = f'<i>{msg}</i>',
+        #     min_width=500,
+        #     max_width=500,
+        #     tooltip = msg_preview,
+        #     icon = folium.Icon( color = clr)
+        # ).add_to(self.map)
 
     def set_row_for_satellite(self, color='red'):
 
@@ -134,7 +173,7 @@ if __name__ == '__main__':
 
     rx_lat = -7.3758454
     rx_log = -40.9715357
-    tx_log = -89
+    tx_log = -70
 
     sk = SkewSat( rx_lat, rx_log, tx_log )
 
@@ -142,21 +181,15 @@ if __name__ == '__main__':
     elevation = sk.getElevation() # ELEVAÇÃO DE ANTENA
     elevation_offset = elevation - 20.5
     skew_LNBF = sk.getSkewLNBF()
-
+    skew_LNBF_h = sk.skewLnbfDegreesToHours(skew_LNBF)
 
     print( f'Satélite: {sk._tx_log}°')
     print( f'Azimute verdadeiro: {azimuth:.1f}°')
     print( f'Elevação: {elevation:.1f}°')
     print( f'Elevação (offset): {elevation_offset:.1f}°')
     print( f'Inclinação do LNBF: {skew_LNBF:.1f}°')
+    print( f'Inclinação do LNBF (h): ~ {skew_LNBF_h:.0f}h')
 
-    skew_LNBF_h = (skew_LNBF * 2)/60
-
-    if skew_LNBF < 0: skew_LNBF_h = abs(skew_LNBF_h) + 6
-    else: skew_LNBF_h = abs(skew_LNBF_h) - 6
-
-    print( f'Inclinação do LNBF (h): {skew_LNBF_h:.1f}')
-
-    # sk.to_point()
-    # sk.set_row_for_satellite()
-    # sk.open_map()
+    sk.to_point()
+    sk.set_row_for_satellite()
+    sk.open_map()
