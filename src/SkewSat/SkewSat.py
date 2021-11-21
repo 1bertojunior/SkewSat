@@ -87,6 +87,19 @@ class SkewSat():
 
         return el
 
+    def getSkewLNBF(self) -> float:
+        skew = 0
+        # 57.295779513082 equivale 1 radiano em graus 
+        delta = (self._tx_log - self._rx_log) / 57.29578
+
+        skew = -57.29578 * math.atan( (math.sin(delta)) / math.tan(self._rx_lat/57.29578) )
+
+        if skew < 0: skew + 90
+        else: skew - 90
+
+        return skew
+
+
     def to_point(self, msg='', msg_preview='Mais detalhes!', clr='red', zoom_start=15):
         azimuth = self.getAzimuth()  # AZIMUTE VERDADEIRO
         elevation = self.getElevation()  # ELEVAÇÃO DE ANTENA
@@ -99,14 +112,6 @@ class SkewSat():
                       tooltip=msg_preview,
                       icon=folium.Icon(color=clr)).add_to(self.map)
 
-    def open_map(self, path='SkewSatMap.html'):
-        html_page = f'{path}'
-        self.map.add_child(folium.LatLngPopup())
-        self.map.save(html_page)
-        # open in browser.
-        new = 2
-        webbrowser.open(html_page, new=new)
-
     def set_row_for_satellite(self, color='red'):
 
         points_rx = [self._rx_lat, self._rx_log]
@@ -116,23 +121,42 @@ class SkewSat():
 
         folium.PolyLine(points, color=color).add_to(self.map)
 
+    def open_map(self, path='SkewSatMap.html'):
+        html_page = f'{path}'
+        self.map.add_child(folium.LatLngPopup())
+        self.map.save(html_page)
+        # open in browser.
+        new = 2
+        webbrowser.open(html_page, new=new)
+
 
 if __name__ == '__main__':
 
     rx_lat = -7.3758454
     rx_log = -40.9715357
-    tx_log = -70
+    tx_log = -89
 
     sk = SkewSat( rx_lat, rx_log, tx_log )
 
     azimuth = sk.getAzimuth() # AZIMUTE VERDADEIRO
     elevation = sk.getElevation() # ELEVAÇÃO DE ANTENA
     elevation_offset = elevation - 20.5
+    skew_LNBF = sk.getSkewLNBF()
 
+
+    print( f'Satélite: {sk._tx_log}°')
     print( f'Azimute verdadeiro: {azimuth:.1f}°')
     print( f'Elevação: {elevation:.1f}°')
     print( f'Elevação (offset): {elevation_offset:.1f}°')
+    print( f'Inclinação do LNBF: {skew_LNBF:.1f}°')
 
-    sk.to_point()
-    sk.set_row_for_satellite()
-    sk.open_map()
+    skew_LNBF_h = (skew_LNBF * 2)/60
+
+    if skew_LNBF < 0: skew_LNBF_h = abs(skew_LNBF_h) + 6
+    else: skew_LNBF_h = abs(skew_LNBF_h) - 6
+
+    print( f'Inclinação do LNBF (h): {skew_LNBF_h:.1f}')
+
+    # sk.to_point()
+    # sk.set_row_for_satellite()
+    # sk.open_map()
