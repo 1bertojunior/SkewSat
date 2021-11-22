@@ -15,7 +15,7 @@ SkewSat
     rx_log = -41.4668289 # Longitude do receptor (antena)
     tx_log = -70 # Longitude do Transmissor  (satélite)
     
-    sk = SkewSat( rx_lat, rx_log, tx_log )
+    sk = SkewSat.SkewSat( rx_lat, rx_log, tx_log )
 
 ### Longitude de todos os satélites geoestacionários
     from satellites import satellites
@@ -36,14 +36,20 @@ SkewSat
 ### Inclinação LNBF (horas)
     skew_LNBF_h = sk.skewLnbfDegreesToHours(skew_LNBF)
 
-### Saída de exemplo
+### Exemplo
     print( f'Satélite: {sk._tx_log}°')
     print( f'Azimute verdadeiro: {azimuth:.1f}°')
     print( f'Elevação: {elevation:.1f}°')
     print( f'Elevação (offset): {elevation_offset:.1f}°')
     print( f'Inclinação do LNBF: {skew_LNBF:.1f}°')
     print( f'Inclinação do LNBF (h): ~ {skew_LNBF_h:.0f}h')
-
+#### Saída
+    >>> Satélite: -70°
+    >>> Azimute verdadeiro: 282.8°
+    >>> Elevação: 55.8°
+    >>> Elevação (offset): 35.3°
+    >>> Inclinação do LNBF: -75.4°
+    >>> Inclinação do LNBF (h): ~ 9h
 ### Criando mapa
     sk.open_map()
     

@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/SkewSat/SkewSat.py
+src/SkewSat/__init__.py
+src/SkewSat.egg-info/PKG-INFO
+src/SkewSat.egg-info/SOURCES.txt
+src/SkewSat.egg-info/dependency_links.txt
+src/SkewSat.egg-info/top_level.txt
