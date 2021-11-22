@@ -172,12 +172,15 @@ class SkewSat:
             points = [points_rx, points_tx]
 
             folium.PolyLine(points, color=color).add_to(self.map)
-        return result
+        return result == 1
 
     def open_map(self, path='SkewSatMap.html'):
-        html_page = f'{path}'
-        self.map.add_child(folium.LatLngPopup())
-        self.map.save(html_page)
-        # open in browser.
-        new = 2
-        webbrowser.open(html_page, new=new)
+        resul = self.checkValues()
+        if resul:
+            html_page = f'{path}'
+            self.map.add_child(folium.LatLngPopup())
+            self.map.save(html_page)
+            # open in browser.
+            new = 2
+            webbrowser.open(html_page, new=new)
+        return resul == 1

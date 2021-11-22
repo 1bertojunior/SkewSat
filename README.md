@@ -10,3 +10,5 @@ SkewSat
 #### Importando pacote
     >>> from SkewSat import SkewSat
 
+## Exemplo de Saida
+![Imagem da renderização do html de saída.](img/exSkewSatMap.png)

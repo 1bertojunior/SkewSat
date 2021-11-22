@@ -1,8 +1,8 @@
 from SkewSat import SkewSat
 
-
-rx_lat = -7.3758454
-rx_log = -40.9715357
+# -7.0838699,-41.4668289,16.83z
+rx_lat = -7.0838699
+rx_log = -41.4668289
 tx_log = -70
 
 sk = SkewSat( rx_lat, rx_log, tx_log )
