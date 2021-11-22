@@ -104,6 +104,9 @@ class SkewSat:
 
         return el
 
+    def convertElevationToOffset(self, elevation):
+        return elevation - 20.5
+
     def getSkewLNBF(self) -> float:
         skew = 0
         result = self.checkValues()
@@ -177,6 +180,8 @@ class SkewSat:
     def open_map(self, path='SkewSatMap.html'):
         resul = self.checkValues()
         if resul:
+            self.to_point()
+            self.set_row_for_satellite()
             html_page = f'{path}'
             self.map.add_child(folium.LatLngPopup())
             self.map.save(html_page)
