@@ -11,4 +11,4 @@ SkewSat
     >>> from SkewSat import SkewSat
 
 ## Exemplo de Saida
-![Imagem da renderização do html de saída.](img/exSkewSatMap.png)
+![Imagem da renderização do html de saída.](https://raw.githubusercontent.com/1bertojunior/SkewSat/main/img/exSkewSatMap.png)
